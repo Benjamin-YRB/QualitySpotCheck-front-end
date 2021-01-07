@@ -51,6 +51,73 @@ export default {
       menuItems: [],
       items: [
         {
+          icon: "el-icon-lx-cascades",
+          index: "1",
+          title: "基础参数",
+          subs: [
+            {
+              index: "baseParams",
+              title: "基础参数配置"
+            },
+            {
+              index: "baseProject",
+              title: "基础项目"
+            }
+          ]
+        },
+        {
+          icon: "el-icon-document",
+          index: "spotCheckTemplate",
+          title: "抽检模板"
+        },
+        {
+          icon: "el-icon-lx-sort",
+          index: "3",
+          title: "抽检列表",
+          subs: [
+            {
+              index: "spotCheckList",
+              title: "抽检列表",
+            },
+            {
+              index: "notPassOrder",
+              title: "不合格工单",
+            },
+            { 
+              index: "complainCheck",
+              title: "复议质检",
+            }
+          ]
+        },
+        {
+          icon: "el-icon-lx-servicefill",
+          index: "4",
+          title: "质检审核",
+          subs: [
+            {
+              index: "",
+              title: "复议工单审核",
+            }
+          ]
+        },
+        {
+          icon: "el-icon-lx-vipcard",
+          index: "5",
+          title: "质检报告",
+          subs: [
+            {
+              icon: "",
+              index: "spotcheckStatisticsReport",
+              title: "质检统计报表"
+            },
+            {
+              icon: "",
+              index: "spotcheckTemplateReportsh",
+              title: "质检报表"
+            }
+          ]
+        },
+        {
           icon: "el-icon-lx-home",
           index: "dashboard",
           title: "系统首页"
@@ -67,7 +134,7 @@ export default {
         },
         {
           icon: "el-icon-lx-calendar",
-          index: "3",
+          index: "10",
           title: "表单相关",
           subs: [
             {
@@ -96,7 +163,7 @@ export default {
         },
         {
           icon: "el-icon-lx-calendar",
-          index: "4",
+          index: "8",
           title: "树形插件",
           subs: [
             {

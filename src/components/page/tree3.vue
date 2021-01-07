@@ -24,7 +24,7 @@
               show-checkbox
               node-key="id"
               default-expand-all
-              :expand-on-click-node="false"
+              :expand-on-click-node="true"
             >
               <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
@@ -77,7 +77,10 @@ export default {
               },
               {
                 id: 10,
-                label: "三级 1-1-2"
+                label: "三级 1-1-2",
+                childent: [
+
+                ]
               }
             ]
           }
@@ -244,4 +247,7 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
+/* .custom-tree-container{
+  height: 100%;
+}  */
 </style>

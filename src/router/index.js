@@ -3,6 +3,8 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+
 export default new Router({
     routes: [
         {
@@ -14,6 +16,16 @@ export default new Router({
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
+                {
+                    path: "/baseproject",
+                    component: () => import('../components/page/BaseProject'),
+                    meta: { title: '基础项目' }
+                },
+                {
+                    path: "/baseparams",
+                    component: () => import('../components/page/BaseParams'),
+                    meta: { title: '基础参数配置' }
+                },
                 {
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
@@ -138,5 +150,6 @@ export default new Router({
             path: '*',
             redirect: '/404'
         }
-    ]
+    ],
+    mode: 'history'
 })
