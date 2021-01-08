@@ -10,7 +10,7 @@
 
                     <el-tree
                     class="filter-tree"
-                    :data="baseProject"
+                    :data="baseProject.children"
                     :props="defaultProps"
                     default-expand-all
                     :filter-node-method="filterNode"
@@ -25,28 +25,16 @@
                 <el-card>
                     <div id="projectContent">
                         <el-input v-model="projectName" placeholder="质检名称"></el-input>
-                        <el-select v-model="value" placeholder="类型" >
-                            <el-option 
-                            v-for="item in projectType"  
-                            :key="item.value" 
-                            :value="item.value"  
-                            :label="item.label"
-                            ></el-option>
-                        </el-select>
-                        <el-button type="primary">查询</el-button>
+
+                        <el-button type="primary" @click="select">查询</el-button>
                         <el-button type="primary" @click="reset">重置</el-button>
                         <el-button type="primary" @click="add">新增</el-button>
                         <br>
                         <br>
-                        <el-table :data="currentProject.children" style="width:100%" highlight-current-row >
+                        <el-table :data="currentShowProjectChildren" style="width:100%" highlight-current-row >
                           <el-table-column align="center" label="质检名称">
                             <template slot-scope="scope">
                                 <span>{{scope.row.name}}</span>
-                            </template>
-                          </el-table-column>
-                          <el-table-column align="center" label="类型">
-                            <template slot-scope="scope">
-                                <span>{{scope.row.type}}</span>
                             </template>
                           </el-table-column>
                           <el-table-column align="center" label="等级">
@@ -71,8 +59,9 @@
                             </template>
                           </el-table-column>
                         </el-table>
+                        <br>
                         <div>
-                            <el-pagination :total="total" :current-page="currentPage" :page-size="pagesize" :page-sizes="[5,10,15,20]" @current-change="handleCurrentChange" layout="prev,pager,next,jumper"></el-pagination>
+                            <el-pagination :total="total" :current-page="currentPage" :page-size="pageSize" :page-sizes="[5,10,15,20]" @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total,sizes,prev,pager,next,jumper"></el-pagination>
                         </div>
                     </div>
                 </el-card>
@@ -88,48 +77,63 @@ export default {
     directives: {  },
     data() {
         return {
+            nodeHasClick: false,
+            isSelect: false,
             currentPage: 1,
             pageSize: 5,
-            currentProject: {children:[]},
-            value: "",
-            projectType: [
-                {
-                    value: "1",
-                    label: "话务"
-                },
-                {
-                    value: "2",
-                    label: "维修"
-                }
-            ],
+            currentProject: {children:[]}, //当前选中项目
             projectName: "",
             filterText: "",
-            baseProject: [
+            baseProject: {
+                children:[
+                    {
+                        id: 1,
+                        label: '一级 1',
+                        name: "测试名称g",
+                        children: [
+                            {
+                                id: 4,
+                                label: '二级 1-1',
+                                name: "测试名称1f",
+                            }]
+                    }, 
                 {
-                    id: 1,
-                    label: '一级 1',
-                    name: "测试名称",
-                    children: [{
-                        id: 4,
-                        label: '二级 1-1',
-                        name: "测试名称1",
-                    }]
-            }, 
-            {
                 id: 2,
                 label: '一级 2',
-                name: "测试名称1",
+                name: "测试名称1s",
                 children: [{
                     id: 5,
                     label: '二级 2-1',
-                    name: "测试名称2",
-                }, {
+                    name: "测试名称2h",
+                }, 
+                {
                     id: 6,
                     label: '二级 2-2',
-                    name: "测试名称3",
+                    name: "测试名称3j",
+                },
+                {
+                    id: 7,
+                    label: '二级 2-2',
+                    name: "测试名称3o",
+                },
+                {
+                    id: 7,
+                    label: '二级 2-2',
+                    name: "测试名称3o",
+                },
+                {
+                    id: 7,
+                    label: '二级 2-2',
+                    name: "测试名称3o",
+                },
+                {
+                    id: 7,
+                    label: '二级 2-2',
+                    name: "测试名称3o",
+                },]
                 }
             ]
-            }],
+            },
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -137,8 +141,37 @@ export default {
         };
     },
     computed: {
+        start(){
+            return (this.currentPage - 1) * this.pageSize ;
+        },
+        end(){
+            return (this.currentPage * this.pageSize) > this.total ? this.total : (this.currentPage * this.pageSize);
+        },
         total() {
-            return this.currentProject.children ? this.currentProject.children.length : 0;
+            return this.nodeHasClick == false ? (this.baseProject.children ? this.baseProject.children.length : 0) : (this.currentProject.children ? this.currentProject.children.length : 0);
+            // return this.currentProject.children ? this.currentProject.children.length : 0;
+        },
+        currentShowProjectChildren(){
+            //当前table展示的项目，分页或条件筛选可能导致展示项与选中项目不一致（部分）
+            console.log(this.nodeHasClick);
+            var temp ;
+            if(this.nodeHasClick == false){
+                if(this.isSelect == false){
+                    return this.baseProject.children;
+                }else{
+                    temp = this.baseProject.children.filter(item => (item.name.indexOf(this.projectName) !== -1));
+                    return Array.isArray(temp) && temp.length !== 0 ? temp.slice(this.start,this.end) : [];
+                }
+            }else{
+                if(this.isSelect == false){
+                    return this.currentProject.children;
+                }else{
+                    temp = this.currentProject.children.filter(item => (item.name.indexOf(this.projectName) !== -1));
+                    return Array.isArray(temp) && temp.length !== 0 ? temp.slice(this.start,this.end) : [];
+                }
+            }
+            // return this.nodeHasClick == false ? this.baseProject.children : (this.currentProject.children ? this.currentProject.children.slice(this.start,this.end) : []);
+            // return this.currentProject.children.slice(start,end);
         },
     },
     mounted() {
@@ -150,12 +183,13 @@ export default {
             return data.label.indexOf(value) !== -1;
         },
         reset(){
-            this.value = "";
+            this.nodeHasClick = false;
+            this.isSelect = false;
             this.projectName = "";
-            //重置的逻辑
         },
         nodeClick(data){
             console.log(data);
+            this.nodeHasClick = true;
             this.currentProject = data;
         },
         modify(data){
@@ -167,8 +201,15 @@ export default {
         deleted(){
 
         },
-        handleCurrentChange(){
-            console.log(this.pageSize);
+        handleCurrentChange(val){
+            this.currentPage = val;
+        },
+        handleSizeChange(val){
+            // console.log(val);
+            this.pageSize = val;
+        },
+        select(){
+            this.isSelect = true;
         }
     },
     watch: {

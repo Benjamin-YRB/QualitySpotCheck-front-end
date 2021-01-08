@@ -27,6 +27,11 @@ export default new Router({
                     meta: { title: '基础参数配置' }
                 },
                 {
+                    path: "qualitytemplate",
+                    component: () => import('../components/page/QualityTemplate'),
+                    meta: { title: '抽检模板'}
+                },
+                {
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }

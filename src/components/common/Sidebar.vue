@@ -67,7 +67,7 @@ export default {
         },
         {
           icon: "el-icon-document",
-          index: "spotCheckTemplate",
+          index: "qualitytemplate",
           title: "抽检模板"
         },
         {
