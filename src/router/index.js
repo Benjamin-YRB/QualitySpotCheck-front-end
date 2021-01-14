@@ -9,13 +9,18 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/login'
         },
         {
             path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
+                {
+                    path: "/mainpage",
+                    component: () => import('../components/page/MainPage'),
+                    meta: { title: '首页' }
+                },
                 {
                     path: "/baseproject",
                     component: () => import('../components/page/BaseProject'),

@@ -95,7 +95,7 @@ export default {
           title: "质检审核",
           subs: [
             {
-              index: "",
+              index: "complainReview",
               title: "复议工单审核",
             }
           ]
@@ -106,12 +106,10 @@ export default {
           title: "质检报告",
           subs: [
             {
-              icon: "",
               index: "spotcheckStatisticsReport",
               title: "质检统计报表"
             },
             {
-              icon: "",
               index: "spotcheckTemplateReportsh",
               title: "质检报表"
             }

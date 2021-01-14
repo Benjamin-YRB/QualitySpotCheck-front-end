@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">后台管理系统</div>
+            <div class="ms-title">热线工单质量检测系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="username">
@@ -16,19 +16,20 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填随便填。</p>
+                <!-- <p class="login-tips">Tips : 用户名和密码随便填随便填。</p> -->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
     export default {
         data: function(){
             return {
                 ruleForm: {
                     username: 'admin',
-                    password: '123123'
+                    password: '123456'
                 },
                 rules: {
                     username: [
@@ -44,8 +45,28 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
+                        //校验之后的登陆请求
+                        // localStorage.setItem('ms_username',this.ruleForm.username);
+                        // var that = this;
+                        axios({
+                            url: 'http://127.0.0.1:8081/quality/v1/login',
+                            method: 'post',
+                            data: {
+                                loginName: this.ruleForm.username,
+                                password: this.ruleForm.password
+                            }
+                        }).then(Response => {
+                            // console.log(Response);
+                            if(Response.data.code === '100000'){
+                                this.$message.error('用户名或密码错误！');
+                                return false;
+                            }
+                            this.$store.commit('loginInit', Response.data);
+                            this.$router.push('/mainpage');
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                        
                     } else {
                         console.log('error submit!!');
                         return false;
