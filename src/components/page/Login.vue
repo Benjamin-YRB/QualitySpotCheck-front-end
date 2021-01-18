@@ -49,9 +49,9 @@ import axios from 'axios';
                         // localStorage.setItem('ms_username',this.ruleForm.username);
                         // var that = this;
                         axios({
-                            url: 'http://127.0.0.1:8081/quality/v1/login',
+                            url: '/login',
                             method: 'post',
-                            data: {
+                            data: {                 
                                 loginName: this.ruleForm.username,
                                 password: this.ruleForm.password
                             }
@@ -62,6 +62,12 @@ import axios from 'axios';
                                 return false;
                             }
                             this.$store.commit('loginInit', Response.data);
+                            // console.log(Response.data.data);
+                            // localStorage.setItem('loginVO',Response.data.data);
+                            localStorage.setItem('token',Response.data.data.token);
+                            localStorage.setItem('role',JSON.stringify(Response.data.data.role));
+                            localStorage.setItem('user',JSON.stringify(Response.data.data.user));
+                            localStorage.setItem('item',JSON.stringify(Response.data.data.item));
                             this.$router.push('/mainpage');
                         }).catch(error => {
                             console.log(error);

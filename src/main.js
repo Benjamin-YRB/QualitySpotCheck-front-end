@@ -15,7 +15,8 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 
-axios.defaults.timeout = 5000;
+// axios.defaults.timeout = 10000;
+axios.defaults.baseURL = 'http://127.0.0.1:8081/quality/v1';
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 Vue.prototype.$axios = axios;
@@ -40,6 +41,17 @@ Vue.prototype.$axios = axios;
 //     }
 // })
 
+router.beforeEach((to, from, next) => {
+    /* must call `next` */
+    // var user = store.state.login.loginCondition.user;
+    
+    if(!store.getters.getToken && to.path !== '/login' ){
+        console.log('to Login');
+        next('/login');
+    }else{
+        next();
+    }
+});
 
 new Vue({
     router,

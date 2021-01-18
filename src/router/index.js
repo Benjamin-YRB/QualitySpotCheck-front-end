@@ -3,13 +3,11 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-
 export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/login'
+            redirect: '/mainpage'
         },
         {
             path: '/',

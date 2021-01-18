@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
     name: 'BaseParams',
     components: {  },
@@ -70,7 +71,7 @@ export default {
             visible: false,
             baseparam: "",
             paramtype: "",
-            paramsConditions:[
+            paramsStatus:[
                 {
                     value:1,
                     label:"启用"
@@ -122,6 +123,31 @@ export default {
             //请求全部数据
         }
     },
+    // create(){
+    //     console.log('basrParams created');
+    // }
+    created(){
+        Axios({
+            headers: {
+                'token': this.$store.getters.getToken
+            },
+            url: '/baseParams',
+            method: 'get',
+
+        }).then(Response => {
+            console.log(Response);
+            console.log(Response.data.code);
+            var data = Response.data;
+            if(data.code == '100003'){
+                this.$message.error('当前会话已过期，请重新登录！')
+                localStorage.clear();
+                this.$router.replace('login');
+            }
+            this.params = Response.data.data;
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 };
 </script>
 
@@ -129,10 +155,10 @@ export default {
     .el-input{
         display: inline-block;
         width: 200PX;
-        margin-right: 30px;
+        margin-right: 10px;
     }
     .el-select{
-        margin-right: 30px;
+        margin-right: 10px;
     }
     #inputcontainer{
         margin-bottom: 15px;

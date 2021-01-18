@@ -49,216 +49,39 @@ export default {
     return {
       collapse: false,
       menuItems: [],
-      items: [
-        {
-          icon: "el-icon-lx-cascades",
-          index: "1",
-          title: "基础参数",
-          subs: [
-            {
-              index: "baseParams",
-              title: "基础参数配置"
-            },
-            {
-              index: "baseProject",
-              title: "基础项目"
-            }
-          ]
-        },
-        {
-          icon: "el-icon-document",
-          index: "qualitytemplate",
-          title: "抽检模板"
-        },
-        {
-          icon: "el-icon-lx-sort",
-          index: "3",
-          title: "抽检列表",
-          subs: [
-            {
-              index: "spotCheckList",
-              title: "抽检列表",
-            },
-            {
-              index: "notPassOrder",
-              title: "不合格工单",
-            },
-            { 
-              index: "complainCheck",
-              title: "复议质检",
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-servicefill",
-          index: "4",
-          title: "质检审核",
-          subs: [
-            {
-              index: "complainReview",
-              title: "复议工单审核",
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-vipcard",
-          index: "5",
-          title: "质检报告",
-          subs: [
-            {
-              index: "spotcheckStatisticsReport",
-              title: "质检统计报表"
-            },
-            {
-              index: "spotcheckTemplateReportsh",
-              title: "质检报表"
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-home",
-          index: "dashboard",
-          title: "系统首页"
-        },
-        /* {
-          icon: "el-icon-lx-cascades",
-          index: "table",
-          title: "基础表格"
-        }, */
-        {
-          icon: "el-icon-lx-copy",
-          index: "tabs",
-          title: "tab选项卡"
-        },
-        {
-          icon: "el-icon-lx-calendar",
-          index: "10",
-          title: "表单相关",
-          subs: [
-            {
-              index: "form",
-              title: "基本表单"
-            },
-            {
-              index: "3-2",
-              title: "三级菜单",
-              subs: [
-                {
-                  index: "editor",
-                  title: "富文本编辑器"
-                },
-                {
-                  index: "markdown",
-                  title: "markdown编辑器"
-                }
-              ]
-            },
-            {
-              index: "upload",
-              title: "文件上传"
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-calendar",
-          index: "8",
-          title: "树形插件",
-          subs: [
-            {
-              index: "tree1",
-              title: "基本树"
-            },
-            {
-              index: "tree2",
-              title: "可选择树"
-            },
-            {
-              index: "tree3",
-              title: "可编辑树"
-            },
-            {
-              index: "tree4",
-              title: "可查询树"
-            },
-            {
-              index: "tree5",
-              title: "节点选择"
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-emoji",
-          index: "icon",
-          title: "自定义图标"
-        },
-        {
-          icon: "el-icon-lx-favor",
-          index: "charts",
-          title: "schart图表"
-        },
-        {
-          icon: "el-icon-rank",
-          index: "6",
-          title: "拖拽组件",
-          subs: [
-            {
-              index: "drag",
-              title: "拖拽列表"
-            },
-            {
-              index: "dialog",
-              title: "拖拽弹框"
-            }
-          ]
-        },
-        {
-          icon: "el-icon-lx-warn",
-          index: "7",
-          title: "错误处理",
-          subs: [
-            {
-              index: "permission",
-              title: "权限测试"
-            },
-            {
-              index: "404",
-              title: "404页面"
-            }
-          ]
-        }
-      ]
+      items: this.$store.getters.getItem
     };
   },
   methods: {
-    getMenuData(menuName) {
-      let menuData = [];
-      getSysmenu().then(
-        function(data) {
-          let data1 = data.data.menuArr;
-          data1.forEach((val,index) => {
-            let i=8;
-            if(val.menuname==menuName){
-              let systemItem = {};
-              systemItem.icon = "el-icon-setting";
-              systemItem.idex=i;
-              systemItem.title=val.menuname;
-              systemItem.subs=[];
-              data1.forEach(value => {
-                if(value.parentid==val.id){
-                  let systemSubs = {};
-                  let menuurl = value.menuurl.split('/')[2];
-                  systemSubs.index = menuurl;
-                  systemSubs.title = value.menuname;
-                  systemItem.subs.push(systemSubs);
-                }
-              });
-              this.items.push(systemItem);
-            }
-            i++;
-          });
-        }.bind(this)
-      );
-    }
+    // getMenuData(menuName) {
+    //   let menuData = [];
+    //   getSysmenu().then(
+    //     function(data) {
+    //       let data1 = data.data.menuArr;
+    //       data1.forEach((val,index) => {
+    //         let i=8;
+    //         if(val.menuname==menuName){
+    //           let systemItem = {};
+    //           systemItem.icon = "el-icon-setting";
+    //           systemItem.idex=i;
+    //           systemItem.title=val.menuname;
+    //           systemItem.subs=[];
+    //           data1.forEach(value => {
+    //             if(value.parentid==val.id){
+    //               let systemSubs = {};
+    //               let menuurl = value.menuurl.split('/')[2];
+    //               systemSubs.index = menuurl;
+    //               systemSubs.title = value.menuname;
+    //               systemItem.subs.push(systemSubs);
+    //             }
+    //           });
+    //           this.items.push(systemItem);
+    //         }
+    //         i++;
+    //       });
+    //     }.bind(this)
+    //   );
+    // }
   },
   computed: {
     onRoutes() {
@@ -270,7 +93,7 @@ export default {
     bus.$on("collapse", msg => {
       this.collapse = msg;
     });
-    this.getMenuData("系统管理");
+    // this.getMenuData("系统管理");
   }
 };
 </script>
