@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
     name: 'BaseProject',
     components: {  },
@@ -85,58 +86,11 @@ export default {
             projectName: "",
             filterText: "",
             baseProject: {
-                children:[
-                    {
-                        id: 1,
-                        label: '一级 1',
-                        name: "测试名称g",
-                        children: [
-                            {
-                                id: 4,
-                                label: '二级 1-1',
-                                name: "测试名称1f",
-                            }]
-                    }, 
-                {
-                id: 2,
-                label: '一级 2',
-                name: "测试名称1s",
-                children: [{
-                    id: 5,
-                    label: '二级 2-1',
-                    name: "测试名称2h",
-                }, 
-                {
-                    id: 6,
-                    label: '二级 2-2',
-                    name: "测试名称3j",
-                },
-                {
-                    id: 7,
-                    label: '二级 2-2',
-                    name: "测试名称3o",
-                },
-                {
-                    id: 7,
-                    label: '二级 2-2',
-                    name: "测试名称3o",
-                },
-                {
-                    id: 7,
-                    label: '二级 2-2',
-                    name: "测试名称3o",
-                },
-                {
-                    id: 7,
-                    label: '二级 2-2',
-                    name: "测试名称3o",
-                },]
-                }
-            ]
+                children:[]
             },
             defaultProps: {
                 children: 'children',
-                label: 'label'
+                label: 'name'
             }
         };
     },
@@ -157,14 +111,14 @@ export default {
             var temp ;
             if(this.nodeHasClick == false){
                 if(this.isSelect == false){
-                    return this.baseProject.children;
+                    return this.baseProject.children ? this.baseProject.children.slice(this.start,this.end) : [];
                 }else{
                     temp = this.baseProject.children.filter(item => (item.name.indexOf(this.projectName) !== -1));
                     return Array.isArray(temp) && temp.length !== 0 ? temp.slice(this.start,this.end) : [];
                 }
             }else{
                 if(this.isSelect == false){
-                    return this.currentProject.children;
+                    return this.currentProject.children ? this.currentProject.children.slice(this.start,this.end) : [];
                 }else{
                     temp = this.currentProject.children.filter(item => (item.name.indexOf(this.projectName) !== -1));
                     return Array.isArray(temp) && temp.length !== 0 ? temp.slice(this.start,this.end) : [];
@@ -177,15 +131,29 @@ export default {
     mounted() {
         
     },
+    created() {
+        Axios({
+            headers: {
+                'token': this.$store.getters.getToken
+            },
+            url: '/baseProjects',
+            method: 'get',
+        }).then(Response => {
+            this.baseProject.children = Response.data.data;
+        }).catch(error => {
+            console.log(error);
+        })
+    },
     methods: {
         filterNode(value, data) {
             if (!value) return true;
-            return data.label.indexOf(value) !== -1;
+            return data.name.indexOf(value) !== -1;
         },
         reset(){
             this.nodeHasClick = false;
             this.isSelect = false;
             this.projectName = "";
+            this.filterText = "";
         },
         nodeClick(data){
             console.log(data);

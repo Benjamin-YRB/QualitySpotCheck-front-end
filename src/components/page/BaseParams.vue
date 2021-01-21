@@ -32,12 +32,12 @@
               </el-table-column>
               <el-table-column align="center" label="参数状态">
                   <template slot-scope="scope">
-                      {{scope.row.status == 1 ? "启用":"停用"}}
+                      {{scope.row.status == true ? "启用":"停用"}}
                   </template>
               </el-table-column>
               <el-table-column align="center" label="操作">
                   <template slot-scope="scope">
-                      <el-button type="primary" v-if="scope.row.status!=1" size="mini" @click="showTips(scope.row)">启用</el-button>
+                      <el-button type="primary" v-if="scope.row.status!=true" size="mini" @click="showTips(scope.row)">启用</el-button>
                       <el-button type="danger" v-else size="mini" @click="showTips(scope.row)">停用</el-button>
                   </template>
               </el-table-column>
@@ -68,7 +68,9 @@ export default {
     directives: {  },
     data() {
         return {
-            currentRow: {},
+            currentRow: {
+                status: false
+            },
             message: "",
             visible: false,
             baseparam: "",
@@ -94,10 +96,6 @@ export default {
         
     },
     computed: {
-        // total() {
-        //     // return this.tableParams.length != 0 ? this.tableParams.length : 0;
-        //     return this.tableParams.length === 0 ? 0 : this.tableParams.length ;
-        // },
         start(){
             return (this.currentPage - 1) * this.pageSize ;
         },
@@ -106,17 +104,21 @@ export default {
         },
         tableParams(){
             var result;
-            if(this.baseparam != '' ||this.paramtype != '' || this.value != ''){
+            if(this.baseparam != '' ||this.paramtype != ''){
                 console.log('修改查询参数');
                  result = this.params
                             .filter(item => (item.name.indexOf(this.baseparam) !== -1))
                             .filter(item => (item.type.indexOf(this.paramtype) !== -1))
-                            .filter(item => item.status == this.selectType)
-                            // .slice(this.start,this.end);
+                            // .filter(item => item.status == this.selectType)
+                if( this.value != ''){
+                    result = result.filter(item => item.status == this.selectType)
+                }
             }else{
                 result = this.params;
+                if( this.value != ''){
+                    result = result.filter(item => item.status == this.selectType)
+                }
             }
-
             this.total = result.length;
             return result;
         },
@@ -124,24 +126,41 @@ export default {
             return  this.tableParams ? this.tableParams.slice(this.start,this.end) : [];
         },
         selectType(){
-            if(this.value == 1){
-                return 1;
-            }else{
-                return 0;
-            }
+            return this.value == 1 ? true : false;
         }
     },
     methods: {
+        init(){
+            Axios({
+                headers: {
+                    'token': this.$store.getters.getToken
+                },
+                url: '/baseParams',
+                method: 'get',
+
+            }).then(Response => {
+                console.log(Response.data);
+                var data = Response.data;
+                if(data.code == '100003'){
+                    this.$message.error('当前会话已过期，请重新登录！')
+                    localStorage.clear();
+                    this.$router.replace('login');
+                }
+                this.params = Response.data.data;
+                this.total = this.params.length;
+            }).catch(error => {
+                console.log(error);
+            })
+        },
         showTips(row){
             //设置当前操作行对象
             this.currentRow = row;
             //动态改变提示内容
-            row.condition == 1 ? this.message = "确定要停用该参数吗？" : this.message = "确定要启用该参数吗？";
+            row.status == 1 ? this.message = "确定要停用该参数吗？" : this.message = "确定要启用该参数吗？";
             this.visible = true;
         },
         ensure(){
-
-            console.log(this.currentRow.name+"的状态修改为"+(this.currentRow.status == 1 ? "停用" :"启用"));
+            console.log('请求前'+this.currentRow.status);
             Axios({
                 headers: {
                     'token': this.$store.getters.getToken
@@ -156,11 +175,13 @@ export default {
                 console.log(Response);
                 console.log(Response.data.data);
                 if(Response.data.data == true){
+
+                    this.currentRow.status = !this.currentRow.status;
+           
                     this.$message({
                         message: '操作成功！',
                         type: 'success'
                     })
-                    this.currentRow.status = !this.currentRow.status;
                 }else{
                     this.$message.error('操作失败，请重试或联系管理员');
                 }
@@ -182,26 +203,7 @@ export default {
         }
     },
     created(){
-        Axios({
-            headers: {
-                'token': this.$store.getters.getToken
-            },
-            url: '/baseParams',
-            method: 'get',
-
-        }).then(Response => {
-            console.log(Response.data);
-            var data = Response.data;
-            if(data.code == '100003'){
-                this.$message.error('当前会话已过期，请重新登录！')
-                localStorage.clear();
-                this.$router.replace('login');
-            }
-            this.params = Response.data.data;
-            this.total = this.params.length;
-        }).catch(error => {
-            console.log(error);
-        })
+        this.init();
     }
 };
 </script>
