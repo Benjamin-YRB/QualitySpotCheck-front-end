@@ -74,7 +74,11 @@
         <el-dialog title="添加基础项目" :visible.sync="addProject">
         <el-form :model="addForm" label-position="left" label-width="80px">
             <el-form-item label="父节点" >
-                
+                  <el-cascader
+                    :options="parentNode"
+                    :props="addProjectProps"
+                    :show-all-levels="false"
+                    clearable></el-cascader>
             </el-form-item>
             <el-form-item label="名称" >
                 <el-input v-model="addForm.name" autocomplete="off"></el-input>
@@ -108,10 +112,11 @@ export default {
         return {
             addProject: false,
             addProjectProps: {
-                label: 'name', 
+                label: 'name',  
                 value: 'id',
                 checkStrictly: true,
-                lazyLoad: true
+                expandTrigger: 'hover',
+
             },
             nodeHasClick: false,
             isSelect: false,
@@ -132,7 +137,8 @@ export default {
                 name: '',
                 level: 0,
                 score: 0
-            }
+            },
+            parentNode:[],//添加模板时的父级节点
         };
     },
     computed: {
@@ -169,7 +175,7 @@ export default {
             // return this.currentProject.children.slice(start,end);
         },
     },
-    created() {
+    created() {//初始化数据
         Axios({
             headers: {
                 'token': this.$store.getters.getToken
@@ -179,11 +185,23 @@ export default {
         }).then(Response => {
             console.log(Response);
             this.baseProject.children = Response.data.data;
+            this.parentNode = this.recursion(this.baseProject.children);
         }).catch(error => {
             console.log(error);
         })
     },
     methods: {
+        recursion(project){ //递归删除空白子数组，避免级联选择器出现空白
+            console.log(project);
+            for(var i = 0; i < project.length;i++){
+                if(project[i].children.length != 0){
+                    this.recursion(project[i].children);
+                }else{
+                   delete project[i].children; 
+                }
+            }
+            return project;
+        },
         concelAdd(){
             this.addForm.parentProject = {};
             this.addForm.name = '';
@@ -210,6 +228,7 @@ export default {
             console.log(data);
         },
         add(){
+            console.log(this.parentNode);
             this.addProject = true;
         },
         deleted(data){

@@ -12,7 +12,7 @@
     "axios-mock-adapter": "^1.16.0",
     "babel-polyfill": "^6.26.0",
     "echarts": "^4.2.1",
-    "element-ui": "^2.4.11",
+    "element-ui": "^2.14.1",
     "mavon-editor": "^2.6.17",
     "mockjs": "^1.0.1-beta3",
     "vue": "^2.5.21",
