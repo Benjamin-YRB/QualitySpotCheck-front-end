@@ -71,21 +71,28 @@
         </el-container>
 
 
-        <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-        <el-form :model="form">
-            <el-form-item label="活动名称" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-dialog title="添加基础项目" :visible.sync="addProject">
+        <el-form :model="addForm" label-position="left" label-width="80px">
+            <el-form-item label="父节点" >
+                
             </el-form-item>
-            <el-form-item label="活动区域" :label-width="formLabelWidth">
-            <el-select v-model="form.region" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+            <el-form-item label="名称" >
+                <el-input v-model="addForm.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="等级" >
+                <el-select v-model="addForm.level" placeholder="请选择活动区域">
+                    <el-option label="无级别" value="0"></el-option>
+                    <el-option label="一般" value="1"></el-option>
+                    <el-option label="严重" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="分值" >
+                <el-input v-model="addForm.score" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="concelAdd">取 消</el-button>
+            <el-button type="primary" @click="addProject = false">确 定</el-button>
         </div>
         </el-dialog>
     </div>
@@ -99,6 +106,13 @@ export default {
     directives: {  },
     data() {
         return {
+            addProject: false,
+            addProjectProps: {
+                label: 'name', 
+                value: 'id',
+                checkStrictly: true,
+                lazyLoad: true
+            },
             nodeHasClick: false,
             isSelect: false,
             currentPage: 1,
@@ -170,6 +184,13 @@ export default {
         })
     },
     methods: {
+        concelAdd(){
+            this.addForm.parentProject = {};
+            this.addForm.name = '';
+            this.addForm.level = '';
+            this.addForm.score = 0;
+            this.addProject = false;
+        },
         filterNode(value, data) {
             if (!value) return true;
             return data.name.indexOf(value) !== -1;
@@ -189,7 +210,7 @@ export default {
             console.log(data);
         },
         add(){
-
+            this.addProject = true;
         },
         deleted(data){
             console.log(data);
