@@ -43,9 +43,7 @@ Vue.prototype.$axios = axios;
 
 router.beforeEach((to, from, next) => {
     /* must call `next` */
-    // var user = store.state.login.loginCondition.user;
-    
-    if(!store.getters.getToken && to.path !== '/login' ){
+    if(store.getters.getToken == null && to.path !== '/login' ){
         console.log('to Login');
         next('/login');
     }else{

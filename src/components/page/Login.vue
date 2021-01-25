@@ -62,10 +62,9 @@ import axios from 'axios';
                                 return false;
                             }
                             this.$store.commit('loginInit', Response.data);
-                            // console.log(Response.data.data);
-                            // localStorage.setItem('loginVO',Response.data.data);
+                            console.log(Response.data.data);
                             localStorage.setItem('token',Response.data.data.token);
-                            localStorage.setItem('role',JSON.stringify(Response.data.data.role));
+                            localStorage.setItem('roles',JSON.stringify(Response.data.data.roles));
                             localStorage.setItem('user',JSON.stringify(Response.data.data.user));
                             localStorage.setItem('item',JSON.stringify(Response.data.data.item));
                             this.$router.push('/mainpage');

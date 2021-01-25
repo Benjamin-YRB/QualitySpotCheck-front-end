@@ -14,18 +14,18 @@
           </el-tooltip>
         </div>
         <!-- 消息中心 -->
-        <div class="btn-bell">
+        <!-- <div class="btn-bell">
           <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
             <router-link to="/tabs">
               <i class="el-icon-bell"></i>
             </router-link>
           </el-tooltip>
           <span class="btn-bell-badge" v-if="message"></span>
-        </div>
+        </div> -->
         <!-- 用户头像 -->
-        <div class="user-avator">
+        <!-- <div class="user-avator">
           <img src="../../assets/img/img.jpg">
-        </div>
+        </div> -->
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
@@ -52,16 +52,15 @@ import { mapActions } from "vuex";
 export default {
   data() {
     return {
-      collapse: false,
+      collapse: true,
       fullscreen: false,
-      name: "linxin",
       message: 2
     };
   },
   computed: {
     username() {
-      let username = localStorage.getItem("ms_username");
-      return username ? username : this.name;
+      let username = JSON.parse(localStorage.getItem('user')).name;
+      return username ? username : '';
     },
     ...mapGetters('dailog',{
       isShow:'isShow'
@@ -71,8 +70,8 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
-        localStorage.removeItem("ms_username");
-        this.$router.push("/login");
+        localStorage.clear();
+        this.$router.replace("/login");
       }else if(command =="user"){
         this.$store.dispatch('dailog/showDailog')
       }

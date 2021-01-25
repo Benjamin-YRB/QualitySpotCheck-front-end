@@ -39,7 +39,9 @@
                           </el-table-column>
                           <el-table-column align="center" label="等级">
                             <template slot-scope="scope">
-                                <span>{{scope.row.level}}</span>
+                                <span v-if="scope.row.level == 0">无级别</span>
+                                <span v-else-if="scope.row.level == 1">一般</span>
+                                <span v-else style="color: red">严重</span>
                             </template>
                           </el-table-column>
                           <el-table-column align="center" label="分值">
@@ -49,10 +51,10 @@
                           </el-table-column>
                           <el-table-column align="center" label="创建时间">
                             <template slot-scope="scope">
-                                <span>{{scope.row.createtime}}</span>
+                                <span>{{scope.row.createTime}}</span>
                             </template>
                           </el-table-column>
-                          <el-table-column align="center" label="操作">
+                          <el-table-column align="center" label="操作" width="180">
                             <template slot-scope="scope" >
                                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="modify(scope.row)"></el-button>
                                 <el-button type="danger"  icon="el-icon-delete" size="mini" @click="deleted(scope.row)"></el-button>
@@ -67,6 +69,25 @@
                 </el-card>
             </el-main>
         </el-container>
+
+
+        <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="活动名称" :label-width="formLabelWidth">
+            <el-input v-model="form.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="活动区域" :label-width="formLabelWidth">
+            <el-select v-model="form.region" placeholder="请选择活动区域">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -91,6 +112,12 @@ export default {
             defaultProps: {
                 children: 'children',
                 label: 'name'
+            },
+            addForm: {
+                parentProject: {},
+                name: '',
+                level: 0,
+                score: 0
             }
         };
     },
@@ -128,9 +155,6 @@ export default {
             // return this.currentProject.children.slice(start,end);
         },
     },
-    mounted() {
-        
-    },
     created() {
         Axios({
             headers: {
@@ -139,6 +163,7 @@ export default {
             url: '/baseProjects',
             method: 'get',
         }).then(Response => {
+            console.log(Response);
             this.baseProject.children = Response.data.data;
         }).catch(error => {
             console.log(error);
@@ -161,13 +186,13 @@ export default {
             this.currentProject = data;
         },
         modify(data){
-
+            console.log(data);
         },
         add(){
 
         },
-        deleted(){
-
+        deleted(data){
+            console.log(data);
         },
         handleCurrentChange(val){
             this.currentPage = val;

@@ -4,19 +4,17 @@
       <el-col :span="24">
         <el-card shadow="hover" class="mgb20" style="height:252px;">
           <div class="user-info">
-            <img src="../../assets/img/img.jpg" class="user-avator" alt>
+            <img :src="user.photo" class="user-avator" alt>
             <div class="user-info-cont">
-              <div class="user-info-name">{{name}}</div>
-              <div>{{role}}</div>
+              <div class="user-info-name">{{user.name}}</div>
+              <div><ul><li v-for="item in roles" :key="item.id">{{item.name}}</li></ul></div>
             </div>
           </div>
           <div class="user-info-list">
-            上次登录时间：
-            <span>2018-01-01</span>
+            &#12288;&#12288;邮箱：<span>{{user.email}}</span>
           </div>
           <div class="user-info-list">
-            上次登录地点：
-            <span>东莞</span>
+            联系方式：<span>{{user.mobile}}</span>
           </div>
         </el-card>
       </el-col>
@@ -28,14 +26,13 @@ export default {
     name:"admin",
     data(){
         return {
-            name:localStorage.getItem("ms_username")
+            user: JSON.parse(localStorage.getItem('user')),
+            roles: JSON.parse(localStorage.getItem('roles')),
         }
     },
     computed: {
-            role() {
-                return this.name === 'admin' ? '超级管理员' : '普通用户';
-            }
-        },
+
+    },
 }
 </script>
 
