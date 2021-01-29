@@ -4,7 +4,7 @@
       <el-input v-model="templateName" placeholder="模板名称"></el-input>
       <el-button type="primary">查询</el-button>
       <el-button type="primary">重置</el-button>
-      <el-button type="primary">新增</el-button>
+      <el-button type="primary" @click="addTemplate">新增</el-button>
     </div>
     <div>
       <el-table :data="templates">
@@ -67,6 +67,9 @@ export default {
   methods: {
     handleCurrentChange(){
       console.log("change")
+    },
+    addTemplate(){
+      this.$router.push('/addTemplate');
     }
   },
 };

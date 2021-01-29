@@ -255,11 +255,12 @@ export default {
                     parentId: this.addForm.parentId,
                     name: this.addForm.name,
                     level: this.addForm.level,
-                    score: this.addForm.level
+                    score: this.addForm.score
                 }
             }).then(Response => {
                 if(Response.data.code == '000000'){
                     this.$message.success( '添加成功');
+                    this.init();
                 }
             }).catch(error => {
                 this.$message.error('出现异常'+error);
@@ -301,10 +302,11 @@ export default {
             this.updateForm.name = '';
             this.updateForm.level = undefined;
             this.updateForm.score = 0;
-
+            this.currentPage = 1;
         },
         nodeClick(data){
             console.log(data);
+            this.currentPage = 1;
             this.nodeHasClick = true;
             this.currentProject = data;
         },

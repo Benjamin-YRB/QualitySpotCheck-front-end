@@ -1,7 +1,5 @@
 <template>
-  <div>
-    首页
-  </div>
+    <img src="../../assets/img/main.jpg" width="100%" height="99%" alt="">
 </template>
 
 <script>
@@ -24,5 +22,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .main{
+    background-image: '';
+  }
 </style>

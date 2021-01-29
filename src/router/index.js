@@ -35,6 +35,11 @@ export default new Router({
                     meta: { title: '抽检模板'}
                 },
                 {
+                    path: "/addTemplate",
+                    component: () => import('../components/page/AddTemplate'),
+                    meta: { title: '添加模板' }
+                },
+                {
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }

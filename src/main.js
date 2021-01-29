@@ -15,9 +15,8 @@ Vue.use(ElementUI, {
     size: 'small'
 });
 
-// axios.defaults.timeout = 10000;
 axios.defaults.baseURL = 'http://127.0.0.1:8081/quality/v1';
-// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
 
 Vue.prototype.$axios = axios;
 //Mock.bootstrap();
