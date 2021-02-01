@@ -20,7 +20,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="抽检人员" prop="checkPersonText" v-if="params[0].status == undefined ? false : params[0].status">
+        <el-form-item label="抽检人员" prop="checkPersonText" v-if="params[0].status == undefined ? false : params[0].status" required >
           <el-popover
             placement="right"
             width="200"
@@ -37,7 +37,7 @@
           </el-popover>
         </el-form-item>
 
-        <el-form-item label="抽检项目" prop="checkProjectText">
+        <el-form-item label="抽检项目" prop="checkProjectText" required>
           <el-popover
             placement="right"
             width="400"
@@ -208,12 +208,38 @@
       </el-form>
     </div>
   </el-card>
-    <el-dialog title="是否进行人均">
+    <!-- <el-dialog 
+      :visible="submitVisible"
+      >
+      <span style="font-size:20px">已匹配工单数量：{{matchNum}}</span>
       <el-form :model="sureForm">
-        <el-form-item label=""></el-form-item>
-        <el-form-item label=""></el-form-item>
+        <el-form-item label="请选择抽检数量" >
+
+        </el-form-item>
+        <el-form-item label="是否人均">
+
+        </el-form-item>
       </el-form>
+    </el-dialog> -->
+
+    <el-dialog :title="title" :visible.sync="submitVisible">
+      <el-form :model="sureForm">
+        <el-form-item label="请输入抽检数量" label-width="120px">
+          <el-input v-model="sureForm.num" autocomplete="off" style="width:200px"></el-input>
+        </el-form-item>
+        <el-form-item label="是否人均" label-width="120px">
+          <el-select v-model="sureForm.isAverage" default-first-option style="width:200px" placeholder="">
+            <el-option label="不人均" value="0"></el-option>
+            <el-option label="人均" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="submitVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTemplate">确 定</el-button>
+      </div>
     </el-dialog>
+
   </div>
 </template>
 
@@ -226,6 +252,8 @@ export default {
   directives: {  },
   data() {
     return {
+      title: '',
+      submitVisible: false,
       date: undefined,
       dateStartChange: false,
       dateEndChange: false,
@@ -246,37 +274,20 @@ export default {
           { required: true, message: '请选择开始日期与结束日期', trigger: 'blur' }
         ],
         checkPersonText: [
-          { required: true, message: '请选择抽检人员', trigger: 'blur' }
+          { required: false, message: '请选择抽检人员', trigger: 'blur' }
         ],
         checkProjectText: [
-          { required: true, message: '请选择抽检项目', trigger: 'blur' }
+          { required: false, message: '请选择抽检项目', trigger: 'blur' }
         ],
         passScore: [
           { required: true, message: '请输入合格分数', trigger: 'blur' }
         ]
       },
-      projectProps: {
-        children: 'children',
-        label: 'name'
-      },
+      projectProps: { children: 'children', label: 'name' },
       params: [],
-      checkNames: [
-        {
-          id: 0,
-          name: '全部',
-          children: []
-        }
-      ],
-      baseProjects: [
-        {
-          id: 0,
-          name: '全部',
-          score: 0,
-          children: []
-        }
-      ],
+      checkNames: [{id: 0,name: '全部',children: []}],
+      baseProjects: [{ id: 0,name: '全部',score: 0,children: []}],
       passScore: undefined,
-      matchNum: 0,
       form: {
         name: '',
         date:[],
@@ -304,9 +315,12 @@ export default {
         overtime: undefined,
         orderrescource: undefined,//工单来源，1、96166工单，2、12345系统工单，3、微信工单，4、在线客服工单，5、转接工单，6、12345电话工单，7、数字城管，8、网站，9、其他
         orderstatus: undefined,//工单状态
-
       },
       orderFrom:[ {label: '96166工单',value: 1},{label: '12345系统工单',value: 2},{label: '微信工单',value: 3},{label: '在线客服工单',value: 4},{label: '转接工单',value: 5},{label: '12345电话工单',value: 6},{label: '数字城管',value: 7},{label: '网站',value: 8},{label: '其他',value: 9}],
+      sureForm: {
+        num: 0,
+        isAverage: ''
+      }
     };
   },
   created() {
@@ -399,14 +413,15 @@ export default {
             },
             url: '/matchOrder',
             method: 'post',
-            data: { //占时只用时间段两个参数匹配工单数量
+            data: { //暂时只用时间段两个参数条件匹配工单数量
               start: this.form.date[0],
               end: this.form.date[1]
             }
           }).then(Response => {
             console.log(Response);
             if(Response.data.code == '000000'){
-              this.matchNum = Response.data.data;
+              this.title = '已匹配工单数量：'+Response.data.data;
+              this.submitVisible = true;
             }else{
               this.$message.error(Response.msg);
             }
@@ -421,6 +436,36 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    addTemplate(){
+      console.log(this.form);
+      Axios({
+        headers: {
+          'token': this.$store.getters.getToken
+        },
+        url: '/qualityTemplate',
+        method: 'post',
+        data: {
+          name: this.form.name,
+          beginTime: this.form.date[0],
+          endTime: this.form.date[1],
+          passScore: this.form.passScore,
+          selectNum: this.sureForm.num,
+          isAverage: this.sureForm.isAverage,
+          checkPersonIds: this.checkPersonIds.filter(item  => item != 0),
+          checkProjectIds: this.checkProjectIds.filter(item => item != 0)
+        }
+      }).then(Response => {
+        console.log(Response);
+        if(Response.data.code != '000000'){
+          this.$message.error(Response.data.msg)
+        }else{
+          this.$message.success( '添加成功');
+        }
+        this.submitVisible = false;
+      }).catch(error => {
+        this.$message.error('系统异常');
+      })
     }
   },
 };
@@ -433,5 +478,10 @@ export default {
   }
   .line{
     text-align: center;
+  }
+  .tips{
+    font-size:15px; 
+    color:#F56C6C; 
+    padding-left: 20px;
   }
 </style>
