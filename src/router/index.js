@@ -40,6 +40,11 @@ export default new Router({
                     meta: { title: '添加模板' }
                 },
                 {
+                    path: "/useTemplate/:id",
+                    component: () => import('../components/page/UseTemplate'),
+                    meta: { title: '使用模板' }
+                },
+                {
                     path: '/dashboard',
                     component: resolve => require(['../components/page/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }
