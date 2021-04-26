@@ -17,7 +17,7 @@ export default new Router({
                 {
                     path: "/mainpage",
                     component: () => import('../components/page/MainPage'),
-                    meta: { title: '首页' }
+                    meta: { title: '系统首页' }
                 },
                 {
                     path: "/baseproject",
@@ -43,6 +43,16 @@ export default new Router({
                     path: "/useTemplate/:id",
                     component: () => import('../components/page/UseTemplate'),
                     meta: { title: '使用模板' }
+                },
+                {
+                    path: "/spotCheckList",
+                    component: () => import('../components/page/SpotCheckList'),
+                    meta: { title: '抽检列表' }
+                },
+                {
+                    path: "/spotCheck/:id",
+                    component: () => import('../components/page/SpotCheck'),
+                    meta: { title: '抽检' }
                 },
                 {
                     path: '/dashboard',

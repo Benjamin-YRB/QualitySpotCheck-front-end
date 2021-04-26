@@ -47,7 +47,7 @@ import {getSysmenu} from '../../api/api'
 export default {
   data() {
     return {
-      collapse: false,
+      collapse: true,
       menuItems: [],
       items: this.$store.getters.getItem
     };

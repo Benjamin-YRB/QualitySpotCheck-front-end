@@ -49,8 +49,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="250px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="modify(scope.row)"></el-button>
-            <el-popconfirm title="确认删除当前模板？" @confirm="deleted(scope.row)">
+            <!-- <el-button type="primary" icon="el-icon-edit" size="mini" @click="modify(scope.row)"></el-button> -->
+            <el-popconfirm title="确认删除当前模板以及根据该模板生成的抽检列表？" @confirm="deleted(scope.row)">
                 <el-button type="danger"  icon="el-icon-delete" size="mini" slot="reference" ></el-button>
             </el-popconfirm>
             <el-button type="primary" size="mini" @click="use(scope.row)">使用模板</el-button>

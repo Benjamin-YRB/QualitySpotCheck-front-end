@@ -1,24 +1,25 @@
 <template>
     <div>
         <el-container>
-            <el-aside width="30%">
+            <el-aside width="40%">
                 <el-card header="基础项目">
+                 <div style=" overflow-y:auto; overflow-x:auto;  width:100%; height:600px;">
                     <el-input
-                    placeholder="输入关键字进行查找"
-                    v-model="filterText">
-                    </el-input>
-
-                    <el-tree
-                    class="filter-tree"
-                    :data="baseProject.children"
-                    :props="defaultProps"
-                    default-expand-all
-                    :filter-node-method="filterNode"
-                    :expand-on-click-node="false"
-                    highlight-current
-                    @node-click="nodeClick"
-                    ref="projectTree">
+                        placeholder="输入关键字进行查找"
+                        v-model="filterText">
+                        </el-input>
+                        <el-tree
+                        class="filter-tree"
+                        :data="baseProject.children"
+                        :props="defaultProps"
+                        default-expand-all
+                        :filter-node-method="filterNode"
+                        :expand-on-click-node="false"
+                        highlight-current
+                        @node-click="nodeClick"
+                        ref="projectTree">
                     </el-tree>
+                 </div>
                 </el-card>
             </el-aside>
             <el-main>
@@ -258,9 +259,12 @@ export default {
                     score: this.addForm.score
                 }
             }).then(Response => {
+                console.log(Response.data.data);
                 if(Response.data.code == '000000'){
                     this.$message.success( '添加成功');
                     this.init();
+                }else{
+                    this.$message.error('添加失败，原因为:'+Response.data.data[0].errorMessage);
                 }
             }).catch(error => {
                 this.$message.error('出现异常'+error);
